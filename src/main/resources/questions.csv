@@ -1,0 +1,6 @@
+Question,Correct,1,2,3,4
+What is the size of long variable?,4,8 bit,16 bit,32 bit,64 bit
+Can be constructor be made final?,2,True,False
+Which method must be implemented by all threads?,4,wait(),start(),stop(),run()
+Can we have two main methods in a java class?,2,Yes,No
+What is the default value of the data type boolean in Java?,1,False,True,0,1
