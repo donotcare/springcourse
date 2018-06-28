@@ -1,5 +1,6 @@
 package ru.otus.quizapp.question;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Question {
@@ -18,7 +19,7 @@ public class Question {
     }
 
     public List<String> getAnswers() {
-        return answers;
+        return Collections.unmodifiableList(answers);
     }
 
     public boolean checkAnswer(String answer) {

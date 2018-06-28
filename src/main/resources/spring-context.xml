@@ -5,7 +5,7 @@
     <bean id="questionDao" class="ru.otus.quizapp.dao.CsvQuestionDao">
         <constructor-arg value="/questions.csv"/>
     </bean>
-    <bean id="questionService" class="ru.otus.quizapp.question.QuestionService">
+    <bean id="questionService" class="ru.otus.quizapp.question.QuestionServiceImpl">
         <constructor-arg ref="questionDao"/>
     </bean>
 </beans>
