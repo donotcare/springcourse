@@ -11,17 +11,20 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.otus.quizapp.question.Question;
+import ru.otus.quizapp.system.i18n.LocaleMessageSource;
 
 import java.util.Iterator;
 
 public class QuizWindow {
     private final Iterator<Question> questions;
     private final Stage primaryStage;
+    private final LocaleMessageSource localeMessageSource;
     private int score;
 
-    QuizWindow(Stage primaryStage, Iterator<Question> questions) {
+    QuizWindow(LocaleMessageSource localeMessageSource, Stage primaryStage, Iterator<Question> questions) {
         this.questions = questions;
         this.primaryStage = primaryStage;
+        this.localeMessageSource = localeMessageSource;
     }
 
     public void open() {
@@ -33,9 +36,9 @@ public class QuizWindow {
             createQuestionView(questions.next());
         } else {
             StackPane root = new StackPane();
-            root.getChildren().add(new Label(String.format("Your score: %s", score)));
+            root.getChildren().add(new Label(localeMessageSource.getMessage("your.score")));
             Scene scene = new Scene(root, 400, 250);
-            primaryStage.setTitle("Java quiz");
+            primaryStage.setTitle(localeMessageSource.getMessage("header"));
             primaryStage.setScene(scene);
             primaryStage.show();
         }
@@ -54,13 +57,13 @@ public class QuizWindow {
         }
         gridPane.add(verticalLayout, 0, i++);
 
-        Button checkAnswerButton = new Button("Check answer");
+        Button checkAnswerButton = new Button(localeMessageSource.getMessage("check.answer"));
         checkAnswerButton.setOnAction(event -> checkAnswerAction(question, (String) group.getSelectedToggle().getUserData()));
 
         gridPane.add(checkAnswerButton, 0, i);
 
         Scene scene = new Scene(gridPane, 500, 250);
-        primaryStage.setTitle("Java quiz");
+        primaryStage.setTitle(localeMessageSource.getMessage("header"));
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -71,9 +74,9 @@ public class QuizWindow {
         alert.setTitle("Information");
         alert.setHeaderText(null);
         if (!question.checkAnswer(answer)) {
-            alert.setContentText("Wrong answer");
+            alert.setContentText(localeMessageSource.getMessage("wrong.answer"));
         } else {
-            alert.setContentText("Correct answer");
+            alert.setContentText(localeMessageSource.getMessage("correct.answer"));
             score++;
         }
         alert.showAndWait();

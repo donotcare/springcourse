@@ -9,20 +9,23 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class CsvQuestionDao implements QuestionDao {
     private final String filename;
+    private final int questionsNum;
 
-    public CsvQuestionDao(String filename) {
+    public CsvQuestionDao(String filename, int questionsNum) {
         this.filename = filename;
+        this.questionsNum = questionsNum;
     }
 
     public List<Question> getAll() {
         try {
             return parseCsv();
         } catch (Exception e) {
-            System.err.println(e.getStackTrace());
+            e.printStackTrace();
             return Collections.emptyList();
         }
     }
@@ -30,8 +33,10 @@ public class CsvQuestionDao implements QuestionDao {
     private List<Question> parseCsv() throws IOException {
         String path = CsvQuestionDao.class.getResource(filename).getFile();
         List<Question> questions = new ArrayList<>();
-        Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(new FileReader(path));
-        for (CSVRecord record : records) {
+        Iterator<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(new FileReader(path)).iterator();
+        int currentQuestionsNum = 0;
+        while (records.hasNext() && currentQuestionsNum++ < questionsNum) {
+            CSVRecord record = records.next();
             String question = record.get("Question");
             int correct = Integer.parseInt(record.get("Correct"));
             List<String> answers = new ArrayList<>();
