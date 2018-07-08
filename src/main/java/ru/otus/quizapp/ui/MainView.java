@@ -1,23 +1,54 @@
 package ru.otus.quizapp.ui;
 
-import javafx.stage.Stage;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.router.Route;
+import ru.otus.quizapp.question.Question;
 import ru.otus.quizapp.question.QuestionService;
 import ru.otus.quizapp.system.i18n.LocaleMessageSource;
 
-public class MainView {
-    private final QuestionService service;
-    private final Stage primaryStage;
+import java.util.Iterator;
+
+@Route
+public class MainView extends VerticalLayout {
     private final LocaleMessageSource localeMessageSource;
+    private final Iterator<Question> questions;
+    private int score;
 
-    public MainView(Stage primaryStage, QuestionService service, LocaleMessageSource localeMessageSource) {
-        this.primaryStage = primaryStage;
-        this.service = service;
+    private final RadioButtonGroup<String> group = new RadioButtonGroup<>();
+
+    public MainView(QuestionService service, LocaleMessageSource localeMessageSource) {
         this.localeMessageSource = localeMessageSource;
+        this.questions = service.getAll().iterator();
+        nextQuestion();
     }
 
-    public void open() {
-        QuizWindow window = new QuizWindow(localeMessageSource, primaryStage, service.getAll().iterator());
-        window.open();
+    private void nextQuestion() {
+        if (questions.hasNext()) {
+            createQuestionView(questions.next());
+        } else {
+            add(new Label(localeMessageSource.getMessage("your.score") + ": " + score));
+        }
     }
 
+    private void createQuestionView(Question question) {
+        Label questionLabel = new Label(question.getText());
+        group.setItems(question.getAnswers());
+        Button checkAnswerBtn = new Button(localeMessageSource.getMessage("check.answer"), e -> checkAnswerAction(question, group.getValue()));
+        removeAll();
+        add(questionLabel, group, checkAnswerBtn);
+    }
+
+    private void checkAnswerAction(Question question, String answer) {
+        if (!question.checkAnswer(answer)) {
+            Notification.show(localeMessageSource.getMessage("wrong.answer"));
+        } else {
+            Notification.show(localeMessageSource.getMessage("correct.answer"));
+            score++;
+        }
+        nextQuestion();
+    }
 }
