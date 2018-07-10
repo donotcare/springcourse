@@ -1,9 +1,10 @@
 package ru.otus.quizapp.dao;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.otus.quizapp.AppConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.quizapp.question.Question;
 import ru.otus.quizapp.question.QuestionDao;
 
@@ -11,7 +12,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringJUnitConfig(AppConfiguration.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 class QuestionDaoIntegrationTest {
     @Autowired
     private QuestionDao dao;

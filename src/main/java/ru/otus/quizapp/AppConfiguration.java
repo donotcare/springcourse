@@ -1,24 +1,29 @@
 package ru.otus.quizapp;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import ru.otus.quizapp.dao.CsvQuestionDao;
 import ru.otus.quizapp.question.QuestionDao;
 import ru.otus.quizapp.question.QuestionService;
 import ru.otus.quizapp.question.QuestionServiceImpl;
+import ru.otus.quizapp.system.ApplicationSettings;
 import ru.otus.quizapp.system.i18n.LocaleMessageSource;
 
 import java.util.Locale;
 
 @Configuration
-@PropertySource("classpath:application.properties")
 public class AppConfiguration {
+    private final ApplicationSettings settings;
+
+    public AppConfiguration(ApplicationSettings settings) {
+        this.settings = settings;
+    }
+
     @Bean
-    public QuestionDao csvQuestionDao(@Value("#{'/${lang}_${file.csv}'}") String file, @Value("${questions}") int questionsNum) {
-        return new CsvQuestionDao(file, questionsNum);
+    public QuestionDao csvQuestionDao() {
+        String fileName = String.format("/%s_%s.csv", settings.getCsvFileName(), settings.getLang());
+        return new CsvQuestionDao(fileName);
     }
 
     @Bean
@@ -27,8 +32,8 @@ public class AppConfiguration {
     }
 
     @Bean
-    public LocaleMessageSource localeMessageSource(@Value("${lang}") String language) {
-        Locale locale = Locale.forLanguageTag(language);
+    public LocaleMessageSource localeMessageSource() {
+        Locale locale = Locale.forLanguageTag(settings.getLang());
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
         ms.setBasename("/i18n/bundle");
         ms.setDefaultEncoding("UTF-8");
