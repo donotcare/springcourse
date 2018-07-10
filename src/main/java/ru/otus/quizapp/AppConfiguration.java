@@ -22,7 +22,7 @@ public class AppConfiguration {
 
     @Bean
     public QuestionDao csvQuestionDao() {
-        String fileName = String.format("/%s_%s.csv", settings.getCsvFileName(), settings.getLang());
+        String fileName = String.format("/%s_%s.csv", settings.getCsvFileName(), settings.getQuizLang());
         return new CsvQuestionDao(fileName);
     }
 
@@ -33,7 +33,7 @@ public class AppConfiguration {
 
     @Bean
     public LocaleMessageSource localeMessageSource() {
-        Locale locale = Locale.forLanguageTag(settings.getLang());
+        Locale locale = Locale.forLanguageTag(settings.getQuizLang());
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
         ms.setBasename("/i18n/bundle");
         ms.setDefaultEncoding("UTF-8");
