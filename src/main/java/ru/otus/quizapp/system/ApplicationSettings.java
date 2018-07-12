@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties
 public class ApplicationSettings {
     private String csvFileName;
-    private String lang;
+    private String quizLang = "en";
 
     public String getCsvFileName() {
         return csvFileName;
@@ -17,11 +17,11 @@ public class ApplicationSettings {
         this.csvFileName = csvFileName;
     }
 
-    public String getLang() {
-        return lang;
+    public String getQuizLang() {
+        return quizLang;
     }
 
-    public void setLang(String lang) {
-        this.lang = lang;
+    public void setQuizLang(String quizLang) {
+        this.quizLang = quizLang;
     }
 }

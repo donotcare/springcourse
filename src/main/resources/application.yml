@@ -1,4 +1,4 @@
 csv-file-name: questions
-lang: ru
+quiz-lang: ru
 server:
   port: 8080
