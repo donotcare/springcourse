@@ -30,6 +30,7 @@ public class MainView extends VerticalLayout {
         if (questions.hasNext()) {
             createQuestionView(questions.next());
         } else {
+            removeAll();
             add(new Label(localeMessageSource.getMessage("your.score") + ": " + score));
         }
     }
