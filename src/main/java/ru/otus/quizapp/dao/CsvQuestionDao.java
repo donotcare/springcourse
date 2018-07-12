@@ -2,8 +2,10 @@ package ru.otus.quizapp.dao;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.context.event.EventListener;
 import ru.otus.quizapp.question.Question;
 import ru.otus.quizapp.question.QuestionDao;
+import ru.otus.quizapp.system.event.LanguageChangedEvent;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,10 +14,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class CsvQuestionDao implements QuestionDao {
-    private final String filename;
+    private String filename;
+    private String lang;
 
-    public CsvQuestionDao(String filename) {
+    public CsvQuestionDao(String filename, String lang) {
         this.filename = filename;
+        this.lang = lang;
     }
 
     public List<Question> getAll() {
@@ -28,7 +32,7 @@ public class CsvQuestionDao implements QuestionDao {
     }
 
     private List<Question> parseCsv() throws IOException {
-        String path = CsvQuestionDao.class.getResource(filename).getFile();
+        String path = CsvQuestionDao.class.getResource(getFilePath()).getFile();
         List<Question> questions = new ArrayList<>();
         for (CSVRecord record : CSVFormat.RFC4180.withFirstRecordAsHeader().parse(new FileReader(path))) {
             String question = record.get("Question");
@@ -42,5 +46,14 @@ public class CsvQuestionDao implements QuestionDao {
         }
 
         return questions;
+    }
+
+    private String getFilePath() {
+        return String.format("/%s_%s.csv", filename, lang);
+    }
+
+    @EventListener
+    public void changeLanguage(LanguageChangedEvent event) {
+        lang = event.getLanguage();
     }
 }
