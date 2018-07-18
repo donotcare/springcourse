@@ -1,30 +1,32 @@
-package ru.otus.quizapp.dao;
+package ru.otus.quizapp.system.event;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.quizapp.question.Question;
+import ru.otus.quizapp.dao.CsvQuestionDao;
 import ru.otus.quizapp.question.QuestionDao;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class QuestionDaoIntegrationTest {
+public class LanguageChangedEventTest {
     @Autowired
-    private QuestionDao dao;
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private QuestionDao questionDao;
 
     @Test
-    void daoGetAll() {
-        List<Question> actual = dao.getAll();
-        assertThat(actual).extracting("text").contains("What is the size of long variable?", "Can we have two main methods in a java class?");
-        assertThat(actual.size()).isEqualTo(2);
+    public void daoLanguageChanged() {
+        assertThat(questionDao.getAll()).extracting("text").contains("What is the size of long variable?", "Can we have two main methods in a java class?");
+        eventPublisher.publishEvent(new LanguageChangedEvent("ru"));
+        assertThat(questionDao.getAll()).extracting("text").contains("Какой размер у переменной типа long?");
     }
 
     @Configuration

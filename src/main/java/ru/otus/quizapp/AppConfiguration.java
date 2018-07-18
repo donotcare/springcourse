@@ -22,8 +22,7 @@ public class AppConfiguration {
 
     @Bean
     public QuestionDao csvQuestionDao() {
-        String fileName = String.format("/%s_%s.csv", settings.getCsvFileName(), settings.getQuizLang());
-        return new CsvQuestionDao(fileName);
+        return new CsvQuestionDao(settings.getCsvFileName(), settings.getQuizLang());
     }
 
     @Bean
